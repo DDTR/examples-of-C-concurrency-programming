@@ -7,4 +7,6 @@ if(NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
 endif(NOT CMAKE_CXX_STANDARD)
 
-add_subdirectory(block_queue)
+include_directories(include)
+
+add_subdirectory(src)
