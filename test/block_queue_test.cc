@@ -15,14 +15,12 @@ void Producer()
     std::thread::id id = std::this_thread::get_id();
     while (true) {
         int value = rand();
-        std::time_t now = std::time(0);
-        char *time_str = std::ctime(&now);
         block_queue.Push(value);
-        size_t size = block_queue.Size();
-        std::lock_guard<std::mutex> lock(out_mutex);
-        std::cout << "Time : " << time_str << " thread id : " << id << " produces value : " << value 
-            << " and now block queue's size is : " << size << std::endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        {
+            std::lock_guard<std::mutex> lock(out_mutex);
+            std::cout << "Thread id : " << id << " produces value : " << value << std::endl;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
 
@@ -30,21 +28,19 @@ void Consumer()
 {
     std::thread::id id = std::this_thread::get_id();
     while (true) {
-        std::time_t now = std::time(0);
-        char *time_str = std::ctime(&now);
         int value = block_queue.Take();
-        size_t size = block_queue.Size();
-        std::lock_guard<std::mutex> lock(out_mutex);
-        std::cout << "Time : " << time_str << " thread id : " << id << " consumes value : " << value 
-            << " when block queue's size is : " << size << std::endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        {
+            std::lock_guard<std::mutex> lock(out_mutex);
+            std::cout << "Thread id : " << id << " consumes value : " << value << std::endl;  
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }    
 }
 
 int main()
 {
-    int producer_cnt = 5;
-    int consumer_cnt = 8;
+    int producer_cnt = 2;
+    int consumer_cnt = 5;
     std::vector<std::thread> producer_vec;
     std::vector<std::thread> consumer_vec;
     for (int i = 0; i < producer_cnt; ++i) {
