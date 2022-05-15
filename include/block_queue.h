@@ -24,7 +24,7 @@ public:
         }
         assert(queue_.size() < capacity_);
         queue_.push(value);
-        cond_.notify_all();
+        cond_.notify_one();
     }
     
     // TODO
@@ -36,7 +36,7 @@ public:
         }
         assert(queue_.size() < capacity_);
         queue_.push(value);
-        cond_.notify_all();
+        cond_.notify_one();
     }
 
     T Take()
@@ -48,7 +48,7 @@ public:
         assert(queue_.size() > 0);
         T value(std::move(queue_.front()));
         queue_.pop();
-        cond_.notify_all();
+        cond_.notify_one();
         return value;
     }
 
